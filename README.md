@@ -18,8 +18,9 @@ of one copy, and only the final question changes, so every measure reads the sam
 | include / exclude | "Say the word that was injected." / "Say any word except the one that was injected." | Jacoby's control C = I − E, automatic A = E / (1 − C) |
 
 Strength is set per concept and layer. α* is the strength that raises the say-a-word log-odds by ln 2 on 8
-calibration passages. The sweep then uses k·α* on 12 held-out passages, injecting either copy, under three
-passage-label schemes (1/2, A/B, X/Y). Gemma often prefers one label whatever is injected, so detection is also
+calibration passages. The sweep then uses k·α* on held-out passages, injecting either copy, under three
+passage-label schemes (1/2, A/B, X/Y). The committed results use 30 passages for labels 1/2 (`--passages 30`) and the
+default 12 for A/B, X/Y and `--different`. Gemma often prefers one label whatever is injected, so detection is also
 scored bias-free: the share of passages where P(second label) is higher when the second copy is injected. Under
 include and exclude, the words of four concepts that were not injected are scored too. This separates a rise that is
 specific to the injected concept from the general effect of a strong vector.
@@ -42,8 +43,9 @@ setup_figure.py    the paradigm diagram above
 ```
 The trial is run once per batch with the injection, and every question is then scored from a copy of its KV cache.
 So the vector reaches the question only through the cache (as in Pearson-Vogel et al. 2026), and all measures see
-exactly the same activations. `python psychophysics.py selftest` checks that the cached scores match a plain
-full-sequence forward pass.
+exactly the same activations. `python psychophysics.py selftest` compares the cached scores with a plain
+full-sequence forward pass. They agree up to bf16 noise (up to about 0.5 nats on a log-probability, from padding
+and batching), not exactly.
 
 ## Run
 ```bash
@@ -73,19 +75,3 @@ are drawn from and the figures themselves (PDFs, sized for a poster):
 
 `summary.csv` has every measure for every condition, including some not drawn: labels A/B and X/Y, the
 bias-free detection shift in nats, the label preference, and Jacoby's estimates. `analysis.py` documents the columns.
-
-## Findings
-Mean-diff concept vectors, 50 concepts, layers 16/31/40/53:
-
-- **Priming and detection dissociate across layers.** Priming peaks at k = 4–8 (+5 to +6.7 log-odds) at L31–53. There,
-  raw detection never leaves 50%, and bias-free detection is at or below chance (L53, X/Y labels: 21% at k = 32). The
-  only clear detection is at L16 with labels 1/2 (74% correct, 84% bias-free at k = 8), the layer that primes least.
-- **Detection depends on the passage labels.** At L16, A/B and X/Y peak at k = 4 (57–68% bias-free) and then fall
-  below chance. At L31 they reach 70–74% at k = 4, while 1/2 stays near 50%. Without injection, A/B and X/Y put 93% and
-  79% of the probability on the two labels (1/2: 100%); the rest goes to refusals ("Both passages are identical…").
-- **Identification stays at its no-injection level** (26–28%) at every layer and strength.
-- **No deliberate control.** "Say the injected word" and "say any word except it" both raise the concept's odds, by
-  similar amounts at L31/40. C is at most 0.6 percentage points (L16), with a CI that includes 0.
-
-The random-vector control, the two-different-passages variant and the layers outside 16/31/40/53 are in
-`summary.csv` and the figures, but they are not written up here yet.
