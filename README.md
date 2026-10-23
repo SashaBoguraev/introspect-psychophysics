@@ -19,8 +19,8 @@ of one copy, and only the final question changes, so every measure reads the sam
 
 Strength is set per concept and layer. α* is the strength that raises the say-a-word log-odds by ln 2 on 8
 calibration passages. The sweep then uses k·α* on held-out passages, injecting either copy, under three
-passage-label schemes (1/2, A/B, X/Y). The committed results use 30 passages for labels 1/2 (`--passages 30`) and the
-default 12 for A/B, X/Y and `--different`. Gemma often prefers one label whatever is injected, so detection is also
+passage-label schemes (1/2, A/B, X/Y). `make sweep` uses 30 passages for labels 1/2 and 12 for A/B and X/Y,
+as in the committed results; `--different` uses 12. Gemma often prefers one label whatever is injected, so detection is also
 scored bias-free: the share of passages where P(second label) is higher when the second copy is injected. Under
 include and exclude, the words of four concepts that were not injected are scored too. This separates a rise that is
 specific to the injected concept from the general effect of a strong vector.

@@ -7,7 +7,8 @@
   calibration_curve_<kind>.csv   mean rise in say-a-word log-odds per (layer, concept, alpha) on the calibration passages
   per_concept.csv                the per-concept values summary.csv is computed from (not committed: 5 MB)
 
-Measures (per concept over the 24 held-out contexts, then mean and 95% bootstrap CI over concepts):
+Measures (per concept over the held-out contexts, 2 per passage: 60 for labels 1/2, 24 for A/B and X/Y; then mean
+and 95% bootstrap CI over concepts):
   priming      rise in the log-odds of saying the concept, vs the same context without injection
   detect       2IFC percent correct, averaged over both injected positions. Gemma often prefers one label whatever
                is injected, which pulls this toward 50%.

@@ -2,7 +2,8 @@
 # turn them into the summary tables and figures there.
 #
 #   make calibrate    α* per (layer, concept)
-#   make sweep        every question at k·α*, concept and random vectors, all label schemes
+#   make sweep        every question at k·α*, concept and random vectors, all label schemes (1/2 on 30 passages,
+#                     A/B and X/Y on 12, as in the committed results)
 #   make summarize    raw CSVs → summary.csv, different/summary.csv, calibration_curve_concept.csv
 #   make plot         every figure, from those tables (no GPU, no raw data needed)
 #
@@ -32,8 +33,9 @@ setup:  ## create .venv and install requirements.txt (uv)
 calibrate:  ## GPU: α* per (layer, concept) on the calibration passages
 	$(PY) psychophysics.py calibrate $(FLAGS)
 
-sweep:  ## GPU: every question at k·α* on the held-out passages
-	$(PY) psychophysics.py sweep $(FLAGS)
+sweep:  ## GPU: every question at k·α* on the held-out passages (labels 1/2 on 30, A/B and X/Y on 12)
+	$(PY) psychophysics.py sweep --labels 12 --passages 30 $(FLAGS)
+	$(PY) psychophysics.py sweep --labels AB XY $(FLAGS)
 
 summarize:  ## CPU: the raw CSVs → the summary tables
 	$(PY) psychophysics.py summarize
