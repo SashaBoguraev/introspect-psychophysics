@@ -1,0 +1,9 @@
+.venv/
+__pycache__/
+*.lock
+*.tmp
+# raw per-trial results (~330 MB): regenerate with make calibrate sweep
+results/psychophysics/sweep_*.csv
+results/psychophysics/calibration_concept.csv
+results/psychophysics/calibration_random.csv
+results/psychophysics/per_concept.csv
